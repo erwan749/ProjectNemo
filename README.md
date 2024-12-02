@@ -12,7 +12,7 @@ Nautilus Diving Club, founded in 1988 by Mr. Georges NEMO, is a diving club offe
 - **Bookings and Rentals:** Track equipment rentals and participant bookings for each dive session.
 
 ## Technology Stack:
-- **Backend:** C# and SQL Server 2008.
+- **Backend:** C# and SQL Server .
 - **Version Control:** TFS 2012 (Team Foundation Server).
 - **Database:** SQL Server for data management.
 
