@@ -1,7 +1,7 @@
 # Project Nemo: Nautilus Diving Club Management System
 
 **Overview:**
-Nautilus Diving Club, founded in 1988 by Mr. Georges NEMO, is a diving club offering recreational and professional diving services. The club needs a computerized management tool to manage its personnel, clients, diving equipment, and dive sessions. This system is built using C# and SQL Server 2008, with the server hosted externally, and TFS 2012 for team collaboration.
+Nautilus Diving Club, founded in 1988 by Mr. Georges NEMO, is a diving club offering recreational and professional diving services. The club needs a computerized management tool to manage its personnel, clients, diving equipment, and dive sessions. This system is built using C# and SQL Server, with the server hosted externally, and TFS 2012 for team collaboration.
 
 ## Features:
 - **Personnel Management:** Track club members including instructors, trainees, and support staff.
