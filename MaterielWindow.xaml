@@ -1,0 +1,26 @@
+﻿<Window x:Class="NemoApp.MaterielWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Gestion des Matériels" Height="427" Width="600">
+    <Grid Margin="0,0,0,-82">
+        <!-- Liste des matériels -->
+        <ListBox Name="MaterielListBox" HorizontalAlignment="Left" Height="150" Margin="20,20,0,0" VerticalAlignment="Top" Width="550" 
+                 DisplayMemberPath="Type" SelectionChanged="MaterielListBox_SelectionChanged"/>
+
+        <!-- Champs pour afficher et éditer les informations du matériel -->
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,180,0,0">
+            <TextBlock Text="Type" />
+            <TextBox Name="TypeTextBox" Width="250" Margin="0,5" />
+
+            <TextBlock Text="Prix de Location" />
+            <TextBox Name="PrixLocTextBox" Width="250" Margin="0,5" />
+
+            <TextBlock Text="Quantité Disponible" />
+            <TextBox Name="QteDispTextBox" Width="250" Margin="0,5" />
+
+            <Button Name="Ajouter" Content="Ajouter" Width="80" Margin="0,10" Click="Ajouter_Click"/>
+            <Button Name="Modifier" Content="Modifier" Width="80" Margin="0,5"/>
+            <Button Name="Supprimer" Content="Supprimer" Width="80" Margin="0,5" Click="Supprimer_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
