@@ -5,8 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NemoApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Gestion des Matériaux et Locations" Height="450" Width="800">
+
     <Grid>
-        
+        <!-- Définir deux colonnes pour la grille -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Section 1 : Liste des matériaux disponibles -->
+        <GroupBox Header="Liste des Matériaux" Grid.Column="0">
+            <DataGrid Name="MaterialsDataGrid" Margin="10" AutoGenerateColumns="True" CanUserAddRows="False" CanUserDeleteRows="False" />
+        </GroupBox>
+
+        <!-- Section 2 : Formulaire de location de matériel -->
+        <GroupBox Header="Location de Matériel" Grid.Column="1" Margin="10">
+            <StackPanel Orientation="Vertical" Margin="10">
+                <ComboBox Name="ClientComboBox" Width="200" Margin="5" />
+                <Label Content="Quantité à louer" Margin="5"/>
+                <NumericUpDown Name="QuantityNumericUpDown" Width="200" Minimum="1" Margin="5"/>
+                <Button Name="RentButton" Content="Louer" Width="200" Margin="5" Click="RentButton_Click"/>
+            </StackPanel>
+        </GroupBox>
     </Grid>
 </Window>
