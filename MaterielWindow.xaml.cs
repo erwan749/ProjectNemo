@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MySql.Data.MySqlClient;  // Assurez-vous que vous avez ajouté cette référence
 
 namespace NemoApp
 {
@@ -34,7 +35,7 @@ namespace NemoApp
         {
             try
             {
-                var materiels = Connexion.GetAllMateriels();
+                var materiels = Connexion.SelectMateriel();
                 materielList.Clear();
                 foreach (var materiel in materiels)
                 {
@@ -62,12 +63,14 @@ namespace NemoApp
 
         private void Ajouter_Click(object sender, RoutedEventArgs e)
         {
+            // Vérifier que les champs de texte ne sont pas vides et que la conversion réussit
             if (!string.IsNullOrWhiteSpace(TypeTextBox.Text) &&
                 decimal.TryParse(PrixLocTextBox.Text, out var prixLoc) &&
                 int.TryParse(QteDispTextBox.Text, out var qteDisp))
             {
                 try
                 {
+                    // Créer un objet Materiel à partir des données saisies
                     var materiel = new Materiel
                     {
                         Type = TypeTextBox.Text,
@@ -75,17 +78,22 @@ namespace NemoApp
                         QteDisp = qteDisp
                     };
 
-                    Connexion.InsertMateriel(materiel.Type, materiel.PrixLoc, materiel.QteDisp);
+                    // Appeler la méthode pour insérer dans la base de données
+                    Connexion.InsertMateriel(Convert.ToInt32(materiel.Type), Convert.ToDouble(materiel.PrixLoc), materiel.QteDisp);
+
+                    // Ajouter le matériel à la liste et vider les champs
                     materielList.Add(materiel);
                     ClearFields();
                 }
                 catch (Exception ex)
                 {
+                    // Afficher une erreur si l'insertion échoue
                     MessageBox.Show($"Erreur lors de l'ajout du matériel : {ex.Message}");
                 }
             }
             else
             {
+                // Afficher un message d'erreur si les champs sont incorrects
                 MessageBox.Show("Veuillez remplir tous les champs correctement.");
             }
         }
@@ -127,18 +135,6 @@ namespace NemoApp
                 ClearFields();
             }
         }
-
-        private void MaterielListBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
     }
 
-    public class Materiel
-    {
-        public int IdMat { get; set; }
-        public string Type { get; set; }
-        public decimal PrixLoc { get; set; }
-        public int QteDisp { get; set; }
-    }
 }
