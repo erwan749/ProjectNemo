@@ -21,13 +21,13 @@
         <!-- StackPanel pour centrer les boutons -->
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Button Content="Afficher les clients" Name="btnAfficherClients" Width="200" Height="40" Margin="5" 
-                    Background="#3A8DFF" Foreground="White" FontWeight="Bold" BorderBrush="DarkBlue" BorderThickness="2" Click="BtnAfficherTables_Click"/>
+                    Background="#3A8DFF" Foreground="White" FontWeight="Bold" BorderBrush="DarkBlue" BorderThickness="2" Click="btnAfficherClients_Click" />
             <Button Content="Afficher les participants" Name="btnAfficherParticipants" Width="200" Height="40" Margin="5" 
-                    Background="#3A8DFF" Foreground="White" FontWeight="Bold" BorderBrush="DarkBlue" BorderThickness="2" Click="BtnTable_Click"/>
+                    Background="#3A8DFF" Foreground="White" FontWeight="Bold" BorderBrush="DarkBlue" BorderThickness="2" Click="btnAfficherParticipants_Click" />
             <Button Content="Afficher les matériels" Name="btnAfficherMateriels" Width="200" Height="40" Margin="5" 
-                    Background="#3A8DFF" Foreground="White" FontWeight="Bold" BorderBrush="DarkBlue" BorderThickness="2" Click="BtnTable_Click"/>
+                    Background="#3A8DFF" Foreground="White" FontWeight="Bold" BorderBrush="DarkBlue" BorderThickness="2" Click="btnAfficherMateriels_Click"/>
             <Button Content="Afficher les locations" Name="btnAfficherLocations" Width="200" Height="40" Margin="5" 
-                    Background="#3A8DFF" Foreground="White" FontWeight="Bold" BorderBrush="DarkBlue" BorderThickness="2" Click="BtnTable_Click"/>
+                    Background="#3A8DFF" Foreground="White" FontWeight="Bold" BorderBrush="DarkBlue" BorderThickness="2" Click="btnAfficherLocations_Click" />
             <!-- Ajouter plus de boutons dynamiquement en fonction des tables -->
         </StackPanel>
 

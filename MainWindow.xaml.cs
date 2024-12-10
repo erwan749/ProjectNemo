@@ -20,5 +20,25 @@ namespace NemoApp
         {
             InitializeComponent();
         }
+
+        private void btnAfficherClients_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnAfficherParticipants_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnAfficherMateriels_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnAfficherLocations_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
