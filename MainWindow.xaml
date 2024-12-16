@@ -1,0 +1,161 @@
+﻿<Window x:Class="NemoApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="600" Width="800">
+    <Grid>
+        <!-- Bannière en haut -->
+        <DockPanel LastChildFill="True">
+            <Border DockPanel.Dock="Top" Background="#3A8DFF" Height="60">
+                <TextBlock Text="Bienvenue dans l'application NemoApp" 
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center"
+                           Foreground="White" 
+                           FontSize="20" 
+                           FontWeight="Bold"/>
+            </Border>
+
+            <!-- Contenu principal avec des tabs -->
+            <TabControl DockPanel.Dock="Top">
+                <!-- Onglet Clients -->
+                <TabItem Header="Clients">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="3*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <DataGrid Name="dataGridClients" Grid.Row="0" AutoGenerateColumns="True" Margin="5"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
+                            <StackPanel>
+                                <TextBlock Text="Nom" Margin="5"/>
+                                <TextBox Name="txtNomCli" Width="150" Margin="5"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Prénom" Margin="5"/>
+                                <TextBox Name="txtPreCli" Width="150" Margin="5"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Niveau" Margin="5"/>
+                                <ComboBox Name="comboNiveauCli" Width="150" Margin="5">
+                                    <ComboBoxItem Content="Débutant"/>
+                                    <ComboBoxItem Content="Intermédiaire"/>
+                                    <ComboBoxItem Content="Avancé"/>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Date d'inscription" Margin="5"/>
+                                <DatePicker Name="datePickerInsCli" Width="150" Margin="5"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Margin="5">
+                            <Button Content="Ajouter" Width="100" Margin="5"/>
+                            <Button Content="Modifier" Width="100" Margin="5"/>
+                            <Button Content="Supprimer" Width="100" Margin="5"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+
+                <!-- Onglet Participants -->
+                <TabItem Header="Participants">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="3*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <DataGrid Name="dataGridParticipants" Grid.Row="0" AutoGenerateColumns="True" Margin="5"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
+                            <StackPanel>
+                                <TextBlock Text="Plongée" Margin="5"/>
+                                <ComboBox Name="comboIdPlong" Width="150" Margin="5"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Client" Margin="5"/>
+                                <ComboBox Name="comboIdCli" Width="150" Margin="5"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Présence" Margin="5"/>
+                                <CheckBox Name="chkPresence" Content="Présent" Margin="5" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Margin="5">
+                            <Button Content="Ajouter" Width="100" Margin="5"/>
+                            <Button Content="Modifier" Width="100" Margin="5"/>
+                            <Button Content="Supprimer" Width="100" Margin="5"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+
+                <!-- Onglet Matériels -->
+                <TabItem Header="Matériels">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="3*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <DataGrid Name="dataGridMateriels" Grid.Row="0" AutoGenerateColumns="True" Margin="5"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
+                            <StackPanel>
+                                <TextBlock Text="Nom Matériel" Margin="5"/>
+                                <TextBox Name="txtNomMateriel" Width="150" Margin="5"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Type Matériel" Margin="5"/>
+                                <ComboBox Name="comboNomTypeMat" Width="150" Margin="5"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Prix Location" Margin="5"/>
+                                <TextBox Name="txtPrixLoc" Width="150" Margin="5"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Quantité Disponible" Margin="5"/>
+                                <TextBox Name="txtQteDisp" Width="150" Margin="5"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Margin="5">
+                            <Button Content="Ajouter" Width="100" Margin="5" Click="AjoutezMateriel_Click"/>
+                            <Button Content="Modifier" Width="100" Margin="5" Click="ModifierMateriel_Click"/>
+                            <Button Content="Supprimer" Width="100" Margin="5" Click="SupprimerMateriel_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+
+                <!-- Onglet Locations -->
+                <TabItem Header="Locations">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="3*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <DataGrid Name="dataGridLocations" Grid.Row="0" AutoGenerateColumns="True" Margin="5"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
+                            <StackPanel>
+                                <TextBlock Text="Client" Margin="5"/>
+                                <ComboBox Name="comboIdCliLoc" Width="150" Margin="5"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Plongée" Margin="5"/>
+                                <ComboBox Name="comboIdPlongLoc" Width="150" Margin="5"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Matériel" Margin="5"/>
+                                <ComboBox Name="comboIdMatLoc" Width="150" Margin="5"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Quantité" Margin="5"/>
+                                <TextBox Name="txtQteLoc" Width="150" Margin="5"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Margin="5">
+                            <Button Content="Ajouter" Width="100" Margin="5"/>
+                            <Button Content="Modifier" Width="100" Margin="5"/>
+                            <Button Content="Supprimer" Width="100" Margin="5"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+    </Grid>
+</Window>
