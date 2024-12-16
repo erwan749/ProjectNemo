@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\SIO\\slam\\juillard\\Programmation\\ProjectNemo\\NemoApp.csproj": {}
+    "C:\\Users\\edelapor\\source\\repos\\ProjectNemo\\NemoApp.csproj": {}
   },
   "projects": {
-    "D:\\SIO\\slam\\juillard\\Programmation\\ProjectNemo\\NemoApp.csproj": {
+    "C:\\Users\\edelapor\\source\\repos\\ProjectNemo\\NemoApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\SIO\\slam\\juillard\\Programmation\\ProjectNemo\\NemoApp.csproj",
+        "projectUniqueName": "C:\\Users\\edelapor\\source\\repos\\ProjectNemo\\NemoApp.csproj",
         "projectName": "NemoApp",
-        "projectPath": "D:\\SIO\\slam\\juillard\\Programmation\\ProjectNemo\\NemoApp.csproj",
+        "projectPath": "C:\\Users\\edelapor\\source\\repos\\ProjectNemo\\NemoApp.csproj",
         "packagesPath": "C:\\Users\\edelapor\\.nuget\\packages\\",
-        "outputPath": "D:\\SIO\\slam\\juillard\\Programmation\\ProjectNemo\\obj\\",
+        "outputPath": "C:\\Users\\edelapor\\source\\repos\\ProjectNemo\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
