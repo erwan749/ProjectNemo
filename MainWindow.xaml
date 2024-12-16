@@ -155,6 +155,46 @@
                         </StackPanel>
                     </Grid>
                 </TabItem>
+                <!-- Onglet Personnel -->
+                <TabItem Header="Personnel">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="3*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- DataGrid pour afficher les personnels -->
+                        <DataGrid Name="dataGridPersonnel" Grid.Row="0" AutoGenerateColumns="True" Margin="5"/>
+
+                        <!-- Formulaire pour les informations du personnel -->
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
+                            <StackPanel>
+                                <TextBlock Text="Nom" Margin="5"/>
+                                <TextBox Name="txtNomPersonnel" Width="150" Margin="5"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Prénom" Margin="5"/>
+                                <TextBox Name="txtPrenomPersonnel" Width="150" Margin="5"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Rôle" Margin="5"/>
+                                <TextBox Name="txtRolePersonnel" Width="150" Margin="5"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Certification" Margin="5"/>
+                                <TextBox Name="txtCertificationPersonnel" Width="150" Margin="5"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Boutons d'action pour le personnel -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Margin="5">
+                            <Button Content="Ajouter" Width="100" Margin="5" Click="AjouterPersonnel_Click"/>
+                            <Button Content="Modifier" Width="100" Margin="5" Click="ModifierPersonnel_Click"/>
+                            <Button Content="Supprimer" Width="100" Margin="5" Click="SupprimerPersonnel_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
             </TabControl>
         </DockPanel>
     </Grid>
