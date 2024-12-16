@@ -9,11 +9,17 @@ namespace NemoApp
 {
     public partial class MainWindow : Window
     {
+        List<Personnel> lesPersonnel;
         public MainWindow()
         {
             InitializeComponent();
+            Connexion.Initialize();
             LoadMateriels();
+            Dictionary<int, string> roles = Connexion.SelectedRole();
+            comboRolePersonnel.Items.Clear();
+            comboRolePersonnel.ItemsSource = roles.Values;
             LoadTypes();
+            lesPersonnel = Connexion.SelectedPersonnel() ;
         }
 
         private void LoadMateriels()
@@ -161,54 +167,100 @@ namespace NemoApp
                 MessageBox.Show("Veuillez sélectionner un matériel à supprimer.");
             }
         }
-        private void RefreshDataGrid()
+       
+
+        private void AjouterPersonnel_Click(object sender, RoutedEventArgs e)
         {
-            using (var context = new DeletePersonnel()) // Remplacez par votre DbContext réel
+            try
             {
-                dataGridPersonnel.ItemsSource = context.Personnels.ToList(); // Adapter le nom de la table
+                // Validation des données d'entrée
+                if (!string.IsNullOrWhiteSpace(txtNomPersonnel.Text) &&
+                    !string.IsNullOrWhiteSpace(txtPrenomPersonnel.Text) &&
+                    comboRolePersonnel.SelectedItem is ComboBoxItem selectedRole &&
+                    !string.IsNullOrWhiteSpace(txtCertificationPersonnel.Text)
+                   )
+                {
+                    string nomPers = txtNomPersonnel.Text;
+                    string prePers = txtPrenomPersonnel.Text;
+                    int nomRole = Convert.ToInt32(comboRolePersonnel);
+                    string certifRole = txtCertificationPersonnel.Text;
+
+                    // Appel de la méthode d'insertion
+                    Connexion.InsertPersonnel(nomPers, prePers, nomRole, certifRole);
+
+                    // Vérification après rechargement
+                    if (dataGridPersonnel.Items.Count > 0) // Ajustez selon votre logique
+                    {
+                        MessageBox.Show("Personnel ajouté avec succès !", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Erreur : Le personnel n'a pas été ajouté.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Veuillez remplir tous les champs et entrer un ID valide.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur lors de l'ajout : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ModifierPersonnel_Click(object sender, RoutedEventArgs e)
+        {
+            if (dataGridPersonnel.SelectedItem is Personnel selectedPersonnel)
+            {
+                try
+                {
+                    // Récupérer les informations saisies
+                    string nom = txtNomPersonnel.Text;
+                    string prenom = txtPrenomPersonnel.Text;
+                    int role = Convert.ToInt32(comboRolePersonnel.Text);
+                    string certification = txtCertificationPersonnel.Text;
+
+                    // Validation des entrées
+                    if (!string.IsNullOrWhiteSpace(nom) &&
+                        !string.IsNullOrWhiteSpace(prenom) &&
+                        comboRolePersonnel.SelectedItem is ComboBoxItem selectedRole &&
+                        !string.IsNullOrWhiteSpace(certification))
+                    {
+                        // Appeler la méthode de mise à jour
+                        Connexion.UpdatePersonnel(selectedPersonnel.IdPers, nom, prenom, role, certification);
+
+                        // Recharger les personnels
+                        MessageBox.Show("Personnel modifié avec succès !");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Veuillez remplir tous les champs correctement.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Erreur lors de la modification : " + ex.Message);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Veuillez sélectionner un personnel à modifier.");
             }
         }
 
         private void SupprimerPersonnel_Click(object sender, RoutedEventArgs e)
         {
-            // Vérifier que l'utilisateur a sélectionné un élément
-            var selectedItem = dataGridPersonnel.SelectedItem;
-            if (selectedItem == null)
-            {
-                MessageBox.Show("Veuillez sélectionner un élément à supprimer.");
-                return;
-            }
-
-            // Récupérer l'ID de l'élément sélectionné
-            var selectedPersonnel = selectedItem as personnels; // Adapter au modèle réel
-            if (selectedPersonnel == null || selectedPersonnel.Id == 0)
-            {
-                MessageBox.Show("Impossible de trouver l'élément sélectionné.");
-                return;
-            }
-
-            try
-            {
-                using (var context = new DeletePersonnel()) // Remplacez `DeletePersonnel` par votre DbContext réel
-                {
-                    // Rechercher l'élément dans la base de données
-                    var itemToDelete = context.Personnels.Find(selectedPersonnel.Id); // Adapter le nom de la table
-                    if (itemToDelete != null)
-                    {
-                        context.Personnels.Remove(itemToDelete); // Suppression de l'élément
-                        context.SaveChanges(); // Sauvegarder les changements dans la base de données
+            Personnel selectedPersonnel = dataGridPersonnel.SelectedItem as Personnel;
+            try {
+                Connexion.DeletePersonnel(selectedPersonnel.IdPers);
+                    
                     }
-                }
-
-                // Actualiser le DataGrid
-                RefreshDataGrid();
-                MessageBox.Show("Élément supprimé avec succès !");
-            }
             catch (Exception ex)
             {
-                MessageBox.Show($"Une erreur s'est produite : {ex.Message}");
+                MessageBox.Show(ex.Message);
             }
         }
-
     }
-}
+    }
+    
