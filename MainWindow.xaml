@@ -152,8 +152,8 @@
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="2" Margin="459,5,0,5">
-                            <Button Content="Ajouter" Width="100" Margin="5" Click="Button_Click"/>
-                            <Button Content="Modifier" Width="100" Margin="5" Click="Button_Click_1"/>
+                            <Button Content="Ajouter" Width="100" Margin="5"/>
+                            <Button Content="Modifier" Width="100" Margin="5"/>
                             <Button Content="Supprimer" Width="100" Margin="5"/>
                         </StackPanel>
                     </Grid>
