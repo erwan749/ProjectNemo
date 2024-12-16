@@ -15,6 +15,9 @@ namespace NemoApp
         {
             InitializeComponent();
             Connexion.Initialize();
+            Dictionary<int, string> roles = Connexion.SelectedRole();
+            comboRolePerso.Items.Clear();
+            comboRolePerso.ItemsSource = roles.Values;
             personnels = Connexion.SelectedPersonnel();
             dataGridPersonnel.ItemsSource = personnels;
             LoadPersonnels();
