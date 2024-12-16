@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "o6poVp08yvA=",
+  "dgSpecHash": "rYs6wLbfSNM=",
   "success": true,
-  "projectFilePath": "E:\\NemoApp\\NemoApp.csproj",
+  "projectFilePath": "D:\\SIO\\slam\\juillard\\Programmation\\ProjectNemo\\NemoApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\edelapor\\.nuget\\packages\\bouncycastle.cryptography\\2.3.1\\bouncycastle.cryptography.2.3.1.nupkg.sha512",
     "C:\\Users\\edelapor\\.nuget\\packages\\google.protobuf\\3.26.1\\google.protobuf.3.26.1.nupkg.sha512",
