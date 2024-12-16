@@ -114,9 +114,9 @@
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Margin="5">
-                            <Button Content="Ajouter" Width="100" Margin="5" Click="AjoutezMateriel_Click"/>
-                            <Button Content="Modifier" Width="100" Margin="5" Click="ModifierMateriel_Click"/>
-                            <Button Content="Supprimer" Width="100" Margin="5" Click="SupprimerMateriel_Click"/>
+                            <Button Content="Ajouter" Width="100" Margin="5"/>
+                            <Button Content="Modifier" Width="100" Margin="5"/>
+                            <Button Content="Supprimer" Width="100" Margin="5"/>
                         </StackPanel>
                     </Grid>
                 </TabItem>
@@ -159,7 +159,7 @@
                     </Grid>
                 </TabItem>
                 <!-- Onglet Personnel -->
-                <TabItem Header="Personnel">
+                <TabItem Header="Personnel" Height="22" Margin="-2,-2,-2,0" VerticalAlignment="Top">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="2*"/>
@@ -168,7 +168,7 @@
                         </Grid.RowDefinitions>
 
                         <!-- DataGrid pour afficher les personnels -->
-                        <DataGrid Name="dataGridPersonnel" Grid.Row="0" AutoGenerateColumns="True" Margin="5"/>
+                        <DataGrid Name="dataGridPersonnel" Grid.Row="0" AutoGenerateColumns="True" Margin="5" SelectionChanged="dataGridPersonnel_SelectionChanged"/>
 
                         <!-- Formulaire pour les informations du personnel -->
                         <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
@@ -183,9 +183,7 @@
                             <StackPanel>
                                 <TextBlock Text="Rôle" Margin="5"/>
                                 <ComboBox Name="comboRolePersonnel" Width="150" Margin="5">
-                                    <ComboBoxItem Content="Administrateur"/>
-                                    <ComboBoxItem Content="Instructeur"/>
-                                    <ComboBoxItem Content="Technicien"/>
+                                    
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel>

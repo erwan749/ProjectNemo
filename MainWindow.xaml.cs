@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Org.BouncyCastle.Crypto;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -9,78 +10,69 @@ namespace NemoApp
 {
     public partial class MainWindow : Window
     {
+
+        List<Personnel> lesPersonnels = new List<Personnel>();
+        Dictionary<int, string> roles;
         public MainWindow()
         {
             InitializeComponent();
-            LoadMateriels();
-            LoadTypes();
+            Connexion.Initialize();
+            lesPersonnels = Connexion.SelectedPersonnel();
+            dataGridPersonnel.ItemsSource = lesPersonnels;
+            Dictionary<int, string> roles = Connexion.SelectedRole();
+            var roleList = roles.Select(r => new { RoleID = r.Key, RoleName = r.Value }).ToList();
+
+            // Lier la ComboBox aux rôles
+            comboRolePersonnel.ItemsSource = roleList;
+            comboRolePersonnel.DisplayMemberPath = "RoleName";
+            comboRolePersonnel.SelectedValuePath = "RoleID";
+
         }
+        
 
-        private void LoadMateriels()
+
+
+        private void ModifierPersonnel_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                // Récupérer les matériels depuis la base de données
-                List<Materiel> materiels = Connexion.SelectMateriel();
-
-                // Assigner la liste directement au DataGrid
-                dataGridMateriels.ItemsSource = materiels;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erreur lors du chargement des matériels : " + ex.Message);
-            }
-        }
-
-        private void LoadTypes()
-        {
-            try
-            {
-                // Ajouter des types fictifs dans le ComboBox pour tester
-                comboNomTypeMat.Items.Clear();
-                comboNomTypeMat.Items.Add(new ComboBoxItem { Content = "Bouteille", Tag = 1 });
-                comboNomTypeMat.Items.Add(new ComboBoxItem { Content = "Palmes", Tag = 2 });
-                comboNomTypeMat.Items.Add(new ComboBoxItem { Content = "Masque", Tag = 3 });
-                comboNomTypeMat.Items.Add(new ComboBoxItem { Content = "Combinaison", Tag = 4 });
-                comboNomTypeMat.SelectedIndex = 0;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erreur lors du chargement des types de matériel : " + ex.Message);
-            }
-        }
-
-        private void ModifierMateriel_Click(object sender, RoutedEventArgs e)
-        {
-            if (dataGridMateriels.SelectedItem is Materiel selectedMateriel)
+            if (dataGridPersonnel.SelectedItem is Personnel selectedPersonnel)
             {
                 try
                 {
                     // Récupérer les informations saisies
-                    string nomTypeMat = comboNomTypeMat.Text;
-                    if (double.TryParse(txtPrixLoc.Text, out double prixLoc) &&
-                        int.TryParse(txtQteDisp.Text, out int qteDisp))
+                    string nom = txtNomPersonnel.Text.Trim();
+                    string prenom = txtPrenomPersonnel.Text.Trim();
+                    string role = comboRolePersonnel.Text.Trim();
+                    string certification = txtCertificationPersonnel.Text.Trim();
+
+                    // Validation des entrées
+                    if (!string.IsNullOrWhiteSpace(nom) &&
+                        !string.IsNullOrWhiteSpace(prenom) &&
+                        !string.IsNullOrWhiteSpace(role) &&
+                        !string.IsNullOrWhiteSpace(certification))
                     {
-                        // Vérifier que le type sélectionné est valide
-                        if (comboNomTypeMat.SelectedValue != null)
-                        {
-                            int idTypeMat = (int)comboNomTypeMat.SelectedValue;
+                        // Mettre à jour l'objet sélectionné dans la liste
+                        selectedPersonnel.NomPers = nom;
+                        selectedPersonnel.PrePres = prenom;
+                        selectedPersonnel.NomRole = role;
+                        selectedPersonnel.CertifPers = certification;
 
-                            // Appeler la méthode de mise à jour
-                            Connexion.UpdateMateriel(selectedMateriel.IdMat, idTypeMat, prixLoc, qteDisp);
-
-                            // Recharger les matériels
-                            LoadMateriels();
-                            MessageBox.Show("Matériel modifié avec succès !");
-                        }
-                        else
+                        // Mettre à jour la source de données
+                        int index = lesPersonnels.FindIndex(p => p.IdPers == selectedPersonnel.IdPers);
+                        if (index >= 0)
                         {
-                            MessageBox.Show("Veuillez sélectionner un type de matériel valide.");
+                            lesPersonnels[index] = selectedPersonnel;
                         }
+                        int selectedRoleId = (int)comboRolePersonnel.SelectedValue;
+                        Connexion.UpdatePersonnel(selectedPersonnel.IdPers, nom, prenom, selectedRoleId, certification);
+                        // Rafraîchir l'affichage du DataGrid
+                        dataGridPersonnel.ItemsSource = null;
+                        dataGridPersonnel.ItemsSource = lesPersonnels;
+
+                        MessageBox.Show("Personnel modifié avec succès !");
                     }
                     else
                     {
-                        MessageBox.Show("Veuillez entrer des valeurs valides pour le prix et la quantité.");
+                        MessageBox.Show("Veuillez remplir tous les champs correctement.");
                     }
                 }
                 catch (Exception ex)
@@ -90,76 +82,104 @@ namespace NemoApp
             }
             else
             {
-                MessageBox.Show("Veuillez sélectionner un matériel à modifier.");
+                MessageBox.Show("Veuillez sélectionner un personnel à modifier.");
             }
         }
 
-        private void AjoutezMateriel_Click(object sender, RoutedEventArgs e)
+
+        private void SupprimerPersonnel_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (comboNomTypeMat.SelectedItem is ComboBoxItem selectedItem &&
-                    double.TryParse(txtPrixLoc.Text, out double prixLoc) &&
-                    int.TryParse(txtQteDisp.Text, out int qteDisp))
+                // Vérifie si un élément est sélectionné dans le DataGrid
+                if (dataGridPersonnel.SelectedItem is Personnel selectedPersonnel)
                 {
-                    int idTypeMat = (int)selectedItem.Tag;
+                    
+                    // Affiche une boîte de dialogue pour confirmer la suppression
+                    var result = MessageBox.Show(
+                        $"Êtes-vous sûr de vouloir supprimer {selectedPersonnel.NomPers} {selectedPersonnel.PrePres} ?",
+                        "Confirmation de suppression",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Warning);
 
-                    // Appeler la méthode d'ajout
-                    Connexion.InsertMateriel(idTypeMat, prixLoc, qteDisp);
-
-                    // Recharger les matériels
-                    LoadMateriels();
-
-                    // Vérification après rechargement
-                    if (dataGridMateriels.Items.Count > 0) // Ajustez selon votre logique
+                    if (result == MessageBoxResult.Yes)
                     {
-                        MessageBox.Show("Matériel ajouté avec succès !");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Erreur : Le matériel n'a pas été ajouté.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        int id = selectedPersonnel.IdPers;
+                        // Appeler la méthode pour supprimer dans la base de données
+                        Connexion.DeletePersonnel(id);
+                        dataGridPersonnel.SelectedIndex = -1;
+                        // Supprimer l'élément de la liste locale
+                        lesPersonnels.Remove(selectedPersonnel);
+
+                        // Rafraîchir le DataGrid
+                        dataGridPersonnel.ItemsSource = null;
+                        dataGridPersonnel.ItemsSource = lesPersonnels;
+
+                        // Afficher un message de succès
+                        MessageBox.Show("Personnel supprimé avec succès !");
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Veuillez entrer des valeurs valides pour le prix et la quantité.");
+                    // Aucun élément n'est sélectionné
+                    MessageBox.Show("Veuillez sélectionner un personnel à supprimer.");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erreur lors de l'ajout : {ex.Message}");
+                // Afficher un message d'erreur en cas de problème
+                MessageBox.Show($"Erreur lors de la suppression : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
 
 
-        private void SupprimerMateriel_Click(object sender, RoutedEventArgs e)
+
+        private void AjouterPersonnel_Click(object sender, RoutedEventArgs e)
         {
-            if (dataGridMateriels.SelectedItem is Materiel selectedMateriel)
+            // Vérifier si un rôle a été sélectionné et si la valeur sélectionnée n'est pas null
+            if (comboRolePersonnel.SelectedValue != null)
             {
                 try
                 {
-                    // Demander confirmation à l'utilisateur
-                    var result = MessageBox.Show("Êtes-vous sûr de vouloir supprimer ce matériel ?", "Confirmation", MessageBoxButton.YesNo);
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        // Appeler la méthode de suppression
-                        Connexion.DeleteMateriel(selectedMateriel.IdMat);
+                    // Récupérer l'ID du rôle sélectionné
+                    int selectedRoleId = (int)comboRolePersonnel.SelectedValue;
 
-                        // Recharger les matériels
-                        LoadMateriels();
-                        MessageBox.Show("Matériel supprimé avec succès !");
-                    }
+                    // Insérer les données dans la table Personnel
+                    Connexion.InsertPersonnel(txtNomPersonnel.Text, txtPrenomPersonnel.Text, selectedRoleId, txtCertificationPersonnel.Text);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Erreur lors de la suppression : " + ex.Message);
+                    // En cas d'exception, afficher un message d'erreur
+                    MessageBox.Show("Erreur lors de l'insertion : " + ex.Message);
                 }
             }
             else
             {
-                MessageBox.Show("Veuillez sélectionner un matériel à supprimer.");
+                MessageBox.Show("Veuillez sélectionner un rôle.");
             }
+            lesPersonnels = Connexion.SelectedPersonnel();
+            dataGridPersonnel.ItemsSource = lesPersonnels;
+            dataGridPersonnel.Items.Refresh();
+
         }
+
+        private void dataGridPersonnel_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dataGridPersonnel.SelectedIndex != -1)
+            {
+
+                Personnel selectedPersonnel = dataGridPersonnel.SelectedItem as Personnel;
+
+                txtNomPersonnel.Text = selectedPersonnel.NomPers;
+                txtPrenomPersonnel.Text = selectedPersonnel.PrePres;
+                comboRolePersonnel.SelectedValue = selectedPersonnel.IdRole;
+                txtCertificationPersonnel.Text = selectedPersonnel.CertifPers;
+            }
+
+
+        }
+
+
     }
 }

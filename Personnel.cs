@@ -13,6 +13,7 @@ namespace NemoApp
         private int _idPers;
         private string _nomPers;
         private string _prePers;
+        private int _idRole;
         private string _nomRole;
         private string _certifRole;
 
@@ -20,12 +21,13 @@ namespace NemoApp
 
         #region Constructeur
 
-        public Personnel(int IdPers, string NomPers, string PrePres, string NomRole, string CertifRole)
+        public Personnel(int IdPers, string NomPers, string PrePres,int IdRole, string NomRole, string CertifRole)
         {
 
             _idPers = IdPers;
             _nomPers = NomPers;
             _prePers = PrePres;
+            _idRole = IdRole;
             _nomRole = NomRole;
             _certifRole = CertifRole;
 
@@ -34,7 +36,11 @@ namespace NemoApp
         #endregion
 
         #region Accesseurs/Mutateurs
-
+        public int IdRole
+        {
+            get { return _idRole; }
+            set { _idRole = value; }
+        }
         public int IdPers
         {
             get { return _idPers; }

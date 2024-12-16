@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using System.Windows;
+using System.Runtime.CompilerServices;
 
 namespace NemoApp
 {
@@ -13,35 +14,22 @@ namespace NemoApp
         private static string uid;
         private static string password;
 
+        #region connect
+
         public static void Initialize()
         {
             server = "mysql-nemoproject.alwaysdata.net";
             database = "nemoproject_database";
             uid = "390982";
             password = "projetnemo";
-
-            string connectionString = $"SERVER={server};DATABASE={database};UID={uid};PASSWORD={password}";
+            string connectionString;
+            connectionString = "SERVER=" + server + ";" + "DATABASE=" +
+            database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password;
             connection = new MySqlConnection(connectionString);
-
-            // Test de connexion avec un MessageBox
-            if (OpenConnection())
-            {
-                MessageBox.Show("Connexion à la base de données réussie !", "Connexion", MessageBoxButton.OK, MessageBoxImage.Information);
-                CloseConnection();
-            }
-            else
-            {
-                MessageBox.Show("Échec de la connexion à la base de données.", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
         }
 
         private static bool OpenConnection()
         {
-            if (connection == null)
-            {
-                Console.WriteLine("La connexion n'a pas été initialisée. Veuillez appeler Initialize().");
-                return false;
-            }
             try
             {
                 connection.Open();
@@ -49,27 +37,29 @@ namespace NemoApp
             }
             catch (MySqlException ex)
             {
-                Console.WriteLine("Erreur de connexion : " + ex.Message);
+                //When handling errors, you can your application's response based 
+                //on the error number.
+                //The two most common error numbers when connecting are as follows:
+                //0: Cannot connect to server.
+                //1045: Invalid user name and/or password.
+                Console.WriteLine("Erreur connexion BDD");
                 switch (ex.Number)
                 {
                     case 0:
-                        Console.WriteLine("Cannot connect to server. Contact administrator.");
+                        Console.WriteLine("Cannot connect to server.  Contact administrator");
                         break;
+
                     case 1045:
-                        Console.WriteLine("Invalid username/password. Please try again.");
+                        Console.WriteLine("Invalid username/password, please try again");
                         break;
                 }
                 return false;
             }
         }
 
+
         private static bool CloseConnection()
         {
-            if (connection == null)
-            {
-                Console.WriteLine("La connexion n'est pas initialisée.");
-                return false;
-            }
             try
             {
                 connection.Close();
@@ -77,152 +67,316 @@ namespace NemoApp
             }
             catch (MySqlException ex)
             {
-                Console.WriteLine("Erreur lors de la fermeture de la connexion : " + ex.Message);
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }
+        #endregion
 
-        public static void InsertMateriel(int idTypeMat, double prix, int qteDispo)
+        #region rôle
+
+        public static Dictionary<int, string> SelectedRole()
         {
-            string query = $"INSERT INTO Materiel (idTypeMat, prixLoc, qteDisp) VALUES({idTypeMat}, {prix}, {qteDispo})";
+            Dictionary<int, string> usersRoles = new Dictionary<int, string>();
+            string query = "SELECT * FROM Roles";
+            if (OpenConnection())
+            {
+                try
+                {
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    MySqlDataReader reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        int userId = reader.GetInt32("idRole");
+                        string role = reader.GetString("nomRole");
+
+                        usersRoles.Add(userId, role);
+                    }
+                    reader.Close();
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("Erreur lors de la récupération des données : " + ex.Message);
+                }
+                finally
+                {
+                    CloseConnection();
+                }
+            }
+
+            return usersRoles;
+        }
+
+
+        #endregion
+
+        #region personels
+
+        public static List<Personnel> SelectedPersonnel()
+        {
+
+            string query = "SELECT idPers , nomPers , prePers ,Personnel.idRole,nomRole ,certifPers   FROM Personnel inner join Roles on Personnel.idRole = Roles.idRole";
+
+            List<Personnel> dbPersonnel = new List<Personnel>();
+
+            if (Connexion.OpenConnection() == true)
+            {
+                //Creation Command MySQL
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                //Création d'un DataReader et execution de la commande
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                //Lecture des données et stockage dans la collection
+                while (dataReader.Read())
+                {
+                    Personnel lePersonnel = new Personnel(Convert.ToInt16(dataReader["idPers"]), Convert.ToString(dataReader["nomPers"]), Convert.ToString(dataReader["prePers"]), Convert.ToInt16(dataReader["idRole"]), Convert.ToString(dataReader["nomRole"]), Convert.ToString(dataReader["certifPers"]));
+                    dbPersonnel.Add(lePersonnel);
+                }
+                dataReader.Close();
+                connection.Close();
+
+            }
+            return dbPersonnel;
+        }
+
+
+        public static void InsertPersonnel(string nomP, string preP, int idR, string certifP)
+        {
+            string query = "INSERT INTO Personnel (nomPers , prePers , idRole , certifPers)  VALUES('" + nomP + "','" + preP + "'," + idR + ",'" + certifP + "')";
             Console.WriteLine(query);
-
-            if (OpenConnection())
+            if (Connexion.OpenConnection() == true)
             {
-                using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-                CloseConnection();
+                //create command and assign the query and connection from the constructor
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+
+                //Execute command
+                cmd.ExecuteNonQuery();
+
+                //close connection
+                Connexion.CloseConnection();
             }
+
         }
 
-        public static void InsertLocation(int idCli, double idPlong, int idMat, int qte)
+        public static void UpdatePersonnel(int idP, string nomP, string preP, int idR, string certifP)
         {
-            string query = $"INSERT INTO LocationMateriel (idCli, idPlong, idMat, qte) VALUES({idCli}, {idPlong}, {idMat}, {qte})";
+            string query = "UPDATE Personnel SET nomPers ='" + nomP + "', prePers ='" + preP + "', idRole =" + idR + ", certifPers =' " + certifP + "' WHERE idPers=" + idP;
             Console.WriteLine(query);
-
-            if (OpenConnection())
+            //Open connection
+            if (Connexion.OpenConnection() == true)
             {
-                using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-                CloseConnection();
+                //create mysql command
+                MySqlCommand cmd = new MySqlCommand();
+                //Assign the query using CommandText
+                cmd.CommandText = query;
+                //Assign the connection using Connection
+                cmd.Connection = connection;
+
+                //Execute query
+                cmd.ExecuteNonQuery();
+
+                //close connection
+                Connexion.CloseConnection();
             }
+
         }
 
-        public static void UpdateMateriel(int idMat, int idTypeMat, double prix, int qteDispo)
+
+        public static void DeletePersonnel(int idP)
         {
-            string query = $"UPDATE Materiel SET idTypeMat = {idTypeMat}, prixLoc = {prix}, qteDisp = {qteDispo} WHERE idMat = {idMat}";
-            Console.WriteLine(query);
+            string query = "DELETE FROM Personnel WHERE idPers =" + idP;
 
-            if (OpenConnection())
+            if (Connexion.OpenConnection() == true)
             {
-                using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-                CloseConnection();
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+                Connexion.CloseConnection();
             }
         }
 
-        public static void UpdateLocation(int idLoc, int idCli, double idPlong, int idMat, int qte)
-        {
-            string query = $"UPDATE LocationMateriel SET idCli = {idCli}, idPlong = {idPlong}, idMat = {idMat}, qte = {qte} WHERE idLoc = {idLoc}";
-            Console.WriteLine(query);
+        #endregion
 
-            if (OpenConnection())
-            {
-                using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-                CloseConnection();
-            }
-        }
-
-        public static void DeleteMateriel(int idMat)
-        {
-            string query = $"DELETE FROM Materiel WHERE idMat = {idMat}";
-
-            if (OpenConnection())
-            {
-                using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-                CloseConnection();
-            }
-        }
-
-        public static void DeleteLocation(int idLoc)
-        {
-            string query = $"DELETE FROM LocationMateriel WHERE idLoc = {idLoc}";
-
-            if (OpenConnection())
-            {
-                using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-                CloseConnection();
-            }
-        }
+        #region Materiel
 
         public static List<Materiel> SelectMateriel()
         {
-            string query = "SELECT idMat, nomTypeMat, prixLoc, qteDisp FROM Materiel INNER JOIN TypeMateriel ON Materiel.idTypeMat = TypeMateriel.idTypeMat";
+            //Select statement
+            string query = "SELECT idMat , nomTypeMat , prixLoc ,qteDisp   FROM Materiel inner join TypeMateriel on Materiel.idTypeMat = TypeMateriel.idTypeMat ";
+
+            //Create a list to store the result
             List<Materiel> dbMateriel = new List<Materiel>();
 
-            if (OpenConnection())
+            //Ouverture connection
+            if (Connexion.OpenConnection() == true)
             {
-                using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                using (MySqlDataReader dataReader = cmd.ExecuteReader())
+                //Creation Command MySQL
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                //Création d'un DataReader et execution de la commande
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                //Lecture des données et stockage dans la collection
+                while (dataReader.Read())
                 {
-                    while (dataReader.Read())
-                    {
-                        Materiel leMateriel = new Materiel(
-                            Convert.ToInt16(dataReader["idMat"]),
-                            Convert.ToString(dataReader["nomTypeMat"]),
-                            Convert.ToDouble(dataReader["prixLoc"]),
-                            Convert.ToInt16(dataReader["qteDisp"])
-                        );
-                        dbMateriel.Add(leMateriel);
-                    }
+                    Materiel leMateriel = new Materiel(Convert.ToInt16(dataReader["idMat"]), Convert.ToString(dataReader["nomTypeMat"]), Convert.ToDouble(dataReader["prixLoc"]), Convert.ToInt16(dataReader["qteDisp"]));
+                    dbMateriel.Add(leMateriel);
                 }
-                CloseConnection();
+
+                //fermeture du Data Reader
+                dataReader.Close();
+
+                //fermeture Connection
+                Connexion.CloseConnection();
+
+                //retour de la collection pour être affichée
+                return dbMateriel;
             }
-
-            return dbMateriel;
+            else
+            {
+                return dbMateriel;
+            }
         }
+        public static void InsertMateriel(int idTypeMat, double prix, int qteDispo)
+        {
+            string query = "INSERT INTO Materiel  (idTypeMat , prixLoc , qteDisp) VALUES(" + idTypeMat + "," + prix + "," + qteDispo + ")";
+            Console.WriteLine(query);
+            if (Connexion.OpenConnection() == true)
+            {
+                //create command and assign the query and connection from the constructor
+                MySqlCommand cmd = new MySqlCommand(query, connection);
 
+                //Execute command
+                cmd.ExecuteNonQuery();
+
+                //close connection
+                Connexion.CloseConnection();
+            }
+        }
+        public static void UpdateMateriel(int idMat, int idTypeMat, double prix, int qteDispo)
+        {
+            //Update Magazine
+            string query = "UPDATE Materiel SET idTypeMat=" + idTypeMat + ", prixLoc=" + prix + ", qteDisp=" + qteDispo + " WHERE idMat=" + idMat;
+            Console.WriteLine(query);
+            //Open connection
+            if (Connexion.OpenConnection() == true)
+            {
+                //create mysql command
+                MySqlCommand cmd = new MySqlCommand();
+                //Assign the query using CommandText
+                cmd.CommandText = query;
+                //Assign the connection using Connection
+                cmd.Connection = connection;
+
+                //Execute query
+                cmd.ExecuteNonQuery();
+
+                //close connection
+                Connexion.CloseConnection();
+            }
+        }
+        public static void DeleteMateriel(int idMat)
+        {
+            //Delete Magazine
+            string query = "DELETE FROM Materiel WHERE idMat =" + idMat;
+
+            if (Connexion.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+                Connexion.CloseConnection();
+            }
+        }
+        #endregion
+
+        #region Location
+        public static void InsertLocation(int idCli, double idPlong, int idMat, int qte)
+        {
+            string query = "INSERT INTO LocationMateriel  (idCli  , idPlong , idMat ,qte ) VALUES(" + idCli + "," + idPlong + "," + idMat + "," + qte + ")";
+            Console.WriteLine(query);
+            if (Connexion.OpenConnection() == true)
+            {
+                //create command and assign the query and connection from the constructor
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+
+                //Execute command
+                cmd.ExecuteNonQuery();
+
+                //close connection
+                Connexion.CloseConnection();
+            }
+        }
+        public static void UpdateLocation(int idLoc, int idCli, double idPlong, int idMat, int qte)
+        {
+            //Update Magazine
+            string query = "UPDATE LocationMateriel SET idCli =" + idCli + ", idPlong =" + idPlong + ", idMat =" + idMat + ", qte = " + qte + " WHERE idLoc=" + idLoc;
+            Console.WriteLine(query);
+            //Open connection
+            if (Connexion.OpenConnection() == true)
+            {
+                //create mysql command
+                MySqlCommand cmd = new MySqlCommand();
+                //Assign the query using CommandText
+                cmd.CommandText = query;
+                //Assign the connection using Connection
+                cmd.Connection = connection;
+
+                //Execute query
+                cmd.ExecuteNonQuery();
+
+                //close connection
+                Connexion.CloseConnection();
+            }
+        }
+        public static void DeleteLocation(int idLoc)
+        {
+            //Delete Magazine
+            string query = "DELETE FROM LocationMateriel WHERE idLoc =" + idLoc;
+
+            if (Connexion.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+                Connexion.CloseConnection();
+            }
+        }
         public static List<Location> SelectLocation()
         {
-            string query = "SELECT idLoc, nomCli, preCli, idPlong, idMat, qte FROM LocationMateriel INNER JOIN Clients ON LocationMateriel.idCli = Clients.idCli";
+            //Select statement
+            string query = "SELECT idLoc  , nomCli , preCli  , idPlong  ,idMat , qte   FROM LocationMateriel inner join Clients on LocationMateriel.idCli  = Clients.idCli  ";
+
+            //Create a list to store the result
             List<Location> dbLocation = new List<Location>();
 
-            if (OpenConnection())
+            //Ouverture connection
+            if (Connexion.OpenConnection() == true)
             {
-                using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                using (MySqlDataReader dataReader = cmd.ExecuteReader())
+                //Creation Command MySQL
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                //Création d'un DataReader et execution de la commande
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                //Lecture des données et stockage dans la collection
+                while (dataReader.Read())
                 {
-                    while (dataReader.Read())
-                    {
-                        Location leLocation = new Location(
-                            Convert.ToInt16(dataReader["idLoc"]),
-                            Convert.ToString(dataReader["nomCli"] + " " + dataReader["preCli"]),
-                            Convert.ToInt16(dataReader["idPlong"]),
-                            Convert.ToInt16(dataReader["idMat"]),
-                            Convert.ToInt16(dataReader["qte"])
-                        );
-                        dbLocation.Add(leLocation);
-                    }
+                    Location leLocation = new Location(Convert.ToInt16(dataReader["idLoc"]), Convert.ToString(dataReader["nomCli"]) + " " + Convert.ToString(dataReader["preCli"]), Convert.ToInt16(dataReader["idPlong"]), Convert.ToInt16(dataReader["idMat"]), Convert.ToInt16(dataReader["qte"]));
+                    dbLocation.Add(leLocation);
                 }
-                CloseConnection();
+
+                //fermeture du Data Reader
+                dataReader.Close();
+
+                //fermeture Connection
+                Connexion.CloseConnection();
+
+                //retour de la collection pour être affichée
+                return dbLocation;
+            }
+            else
+            {
+                return dbLocation;
             }
 
-            return dbLocation;
         }
+        #endregion
     }
 }
