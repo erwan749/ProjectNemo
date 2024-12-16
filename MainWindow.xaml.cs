@@ -180,6 +180,11 @@ namespace NemoApp
 
         }
 
-
+        private void txtsearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            
+            dataGridPersonnel.ItemsSource = Connexion.SearchPersonnel(txtsearch.Text);
+            dataGridPersonnel.Items.Refresh();
+        }
     }
 }

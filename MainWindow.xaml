@@ -159,7 +159,7 @@
                     </Grid>
                 </TabItem>
                 <!-- Onglet Personnel -->
-                <TabItem Header="Personnel" Height="22" Margin="-2,-2,-2,0" VerticalAlignment="Top">
+                <TabItem Header="Personnel" Height="22" Margin="-2,0,-2,0" VerticalAlignment="Center">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="2*"/>
@@ -168,7 +168,15 @@
                         </Grid.RowDefinitions>
 
                         <!-- DataGrid pour afficher les personnels -->
-                        <DataGrid Name="dataGridPersonnel" Grid.Row="0" AutoGenerateColumns="True" Margin="5" SelectionChanged="dataGridPersonnel_SelectionChanged"/>
+                        <DataGrid Name="dataGridPersonnel" Grid.Row="0" Margin="5" SelectionChanged="dataGridPersonnel_SelectionChanged" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID Personnel" Binding="{Binding IdPers}" />
+                                <DataGridTextColumn Header="Nom" Binding="{Binding NomPers}" />
+                                <DataGridTextColumn Header="Prénom" Binding="{Binding PrePres}" />
+                                <DataGridTextColumn Header="Nom du Rôle" Binding="{Binding NomRole}" />
+                                <DataGridTextColumn Header="Certification" Binding="{Binding CertifPers}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
 
                         <!-- Formulaire pour les informations du personnel -->
                         <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
@@ -183,7 +191,7 @@
                             <StackPanel>
                                 <TextBlock Text="Rôle" Margin="5"/>
                                 <ComboBox Name="comboRolePersonnel" Width="150" Margin="5">
-                                    
+
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel>
@@ -198,6 +206,8 @@
                             <Button Content="Modifier" Width="100" Margin="5" Click="ModifierPersonnel_Click"/>
                             <Button Content="Supprimer" Width="100" Margin="5" Click="SupprimerPersonnel_Click"/>
                         </StackPanel>
+                        <TextBox x:Name="txtsearch" HorizontalAlignment="Left" Margin="10,47,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="txtsearch_TextChanged"/>
+                        <Label x:Name="lblsearch" Content="recherche des personnels" HorizontalAlignment="Left" Margin="10,16,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150"/>
                     </Grid>
                 </TabItem>
             </TabControl>

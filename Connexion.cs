@@ -195,6 +195,33 @@ namespace NemoApp
             }
         }
 
+        public static List<Personnel> SearchPersonnel(string input)
+        {
+
+            string query = "SELECT idPers , nomPers , prePers ,Personnel.idRole,nomRole ,certifPers   FROM Personnel inner join Roles on Personnel.idRole = Roles.idRole where nomPers like '%"+input+"%' or prePers like '%"+input+"%'";
+
+            List<Personnel> dbPersonnel = new List<Personnel>();
+
+            if (Connexion.OpenConnection() == true)
+            {
+                //Creation Command MySQL
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                //Création d'un DataReader et execution de la commande
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                //Lecture des données et stockage dans la collection
+                while (dataReader.Read())
+                {
+                    Personnel lePersonnel = new Personnel(Convert.ToInt16(dataReader["idPers"]), Convert.ToString(dataReader["nomPers"]), Convert.ToString(dataReader["prePers"]), Convert.ToInt16(dataReader["idRole"]), Convert.ToString(dataReader["nomRole"]), Convert.ToString(dataReader["certifPers"]));
+                    dbPersonnel.Add(lePersonnel);
+                }
+                dataReader.Close();
+                connection.Close();
+
+            }
+            return dbPersonnel;
+        }
+
         #endregion
 
         #region Materiel
