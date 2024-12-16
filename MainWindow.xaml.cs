@@ -10,46 +10,14 @@ namespace NemoApp
 {
     public partial class MainWindow : Window
     {
+        List<Personnel> personnels;
         public MainWindow()
         {
             InitializeComponent();
-            LoadMateriels();
-            LoadTypes();
+            Connexion.Initialize();
+            personnels = Connexion.SelectedPersonnel();
+            dataGridPersonnel.ItemsSource = personnels;
             LoadPersonnels();
-        }
-
-        private void LoadMateriels()
-        {
-            try
-            {
-                // Récupérer les matériels depuis la base de données
-                List<Materiel> materiels = Connexion.SelectMateriel();
-
-                // Assigner la liste directement au DataGrid
-                dataGridMateriels.ItemsSource = materiels;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erreur lors du chargement des matériels : " + ex.Message);
-            }
-        }
-
-        private void LoadTypes()
-        {
-            try
-            {
-                // Ajouter des types fictifs dans le ComboBox pour tester
-                comboNomTypeMat.Items.Clear();
-                comboNomTypeMat.Items.Add(new ComboBoxItem { Content = "Bouteille", Tag = 1 });
-                comboNomTypeMat.Items.Add(new ComboBoxItem { Content = "Palmes", Tag = 2 });
-                comboNomTypeMat.Items.Add(new ComboBoxItem { Content = "Masque", Tag = 3 });
-                comboNomTypeMat.Items.Add(new ComboBoxItem { Content = "Combinaison", Tag = 4 });
-                comboNomTypeMat.SelectedIndex = 0;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erreur lors du chargement des types de matériel : " + ex.Message);
-            }
         }
 
         private void LoadPersonnels()
@@ -64,13 +32,13 @@ namespace NemoApp
                 // Validation des données d'entrée
                 if (!string.IsNullOrWhiteSpace(txtNomPersonnel.Text) &&
                     !string.IsNullOrWhiteSpace(txtPrenomPersonnel.Text) &&
-                    !string.IsNullOrWhiteSpace(txtRolePersonnel.Text) &&
+                    comboRolePerso.SelectedItem is ComboBoxItem selectedRole &&
                     !string.IsNullOrWhiteSpace(txtCertificationPersonnel.Text)
                    )
                 {
                     string nomPers = txtNomPersonnel.Text;
                     string prePers = txtPrenomPersonnel.Text;
-                    int nomRole = Convert.ToInt32(txtRolePersonnel.Text);
+                    int nomRole = Convert.ToInt32(comboRolePerso);
                     string certifRole = txtCertificationPersonnel.Text;
 
                     // Appel de la méthode d'insertion
@@ -99,6 +67,5 @@ namespace NemoApp
                 MessageBox.Show($"Erreur lors de l'ajout : {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
     }
 }
