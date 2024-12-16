@@ -1,0 +1,27 @@
+ private void btnAddPerso_Click(object sender, RoutedEventArgs e)
+ {
+     // Vérifier si un rôle a été sélectionné et si la valeur sélectionnée n'est pas null
+     if (comboRolePersonnel.SelectedValue != null)
+     {
+         try
+         {
+             // Récupérer l'ID du rôle sélectionné
+             int selectedRoleId = (int)comboRolePersonnel.SelectedValue;
+
+             // Insérer les données dans la table Personnel
+             Connexion.InsertPersonnel(txtNomPersonnel.Text, txtPrenomPersonnel.Text, selectedRoleId, txtCertificationPersonnel.Text);
+         }
+         catch (Exception ex)
+         {
+             // En cas d'exception, afficher un message d'erreur
+             MessageBox.Show("Erreur lors de l'insertion : " + ex.Message);
+         }
+     }
+     else
+     {
+         MessageBox.Show("Veuillez sélectionner un rôle.");
+     }
+     lesP = Connexion.SelectedPersonnel();
+     dataGridPersonnel.ItemsSource = lesP;
+     dataGridPersonnel.Items.Refresh();
+ }
