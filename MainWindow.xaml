@@ -124,13 +124,16 @@
                 <!-- Onglet Locations -->
                 <TabItem Header="Locations">
                     <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="2*"/>
                             <RowDefinition Height="3*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <DataGrid Name="dataGridLocations" Grid.Row="0" AutoGenerateColumns="True" Margin="5"/>
-                        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
+                        <DataGrid Name="dataGridLocations" Grid.Row="0" AutoGenerateColumns="True" Margin="5,5,5,5"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <StackPanel>
                                 <TextBlock Text="Client" Margin="5"/>
                                 <ComboBox Name="comboIdCliLoc" Width="150" Margin="5"/>
@@ -148,9 +151,9 @@
                                 <TextBox Name="txtQteLoc" Width="150" Margin="5"/>
                             </StackPanel>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Margin="5">
-                            <Button Content="Ajouter" Width="100" Margin="5"/>
-                            <Button Content="Modifier" Width="100" Margin="5"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="2" Margin="459,5,0,5">
+                            <Button Content="Ajouter" Width="100" Margin="5" Click="Button_Click"/>
+                            <Button Content="Modifier" Width="100" Margin="5" Click="Button_Click_1"/>
                             <Button Content="Supprimer" Width="100" Margin="5"/>
                         </StackPanel>
                     </Grid>
@@ -179,7 +182,11 @@
                             </StackPanel>
                             <StackPanel>
                                 <TextBlock Text="Rôle" Margin="5"/>
-                                <TextBox Name="txtRolePersonnel" Width="150" Margin="5"/>
+                                <ComboBox Name="comboRolePersonnel" Width="150" Margin="5">
+                                    <ComboBoxItem Content="Administrateur"/>
+                                    <ComboBoxItem Content="Instructeur"/>
+                                    <ComboBoxItem Content="Technicien"/>
+                                </ComboBox>
                             </StackPanel>
                             <StackPanel>
                                 <TextBlock Text="Certification" Margin="5"/>
