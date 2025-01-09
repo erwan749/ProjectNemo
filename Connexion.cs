@@ -410,7 +410,9 @@ namespace NemoApp
 
         public static void InsertPlongees( DateTime datePlong, Site leSite, string time)
         {
-            string query = "INSERT INTO Plongees  (datePlong , idSite ,dureePlong ) VALUES('" + datePlong + "'," + leSite.IdSite + ",'" + time + "')";
+
+            string FormattedDate = datePlong.ToString("yyyy-MM-dd HH:mm:ss");
+            string query = "INSERT INTO Plongees  (datePlong , idSite ,dureePlong ) VALUES('" + FormattedDate + "'," + leSite.IdSite + ",'" + time + "')";
             Console.WriteLine(query);
             if (Connexion.OpenConnection() == true)
             {
@@ -427,8 +429,9 @@ namespace NemoApp
 
         public static void UpdatePlongees(Plonge unePlongee , DateTime datePlong, Site leSite, string time)
         {
+            string FormattedDate = datePlong.ToString("yyyy-MM-dd HH:mm:ss");
             //Update Magazine
-            string query = "UPDATE Plongees SET datePlong ='" + datePlong + "', idSite =" + leSite.IdSite + ", dureePlong ='" + time + "' WHERE idPlong=" + unePlongee.IdPlonge;
+            string query = "UPDATE Plongees SET datePlong ='" + FormattedDate + "', idSite =" + leSite.IdSite + ", dureePlong ='" + time + "' WHERE idPlong=" + unePlongee.IdPlonge;
             Console.WriteLine(query);
             //Open connection
             if (Connexion.OpenConnection() == true)
@@ -663,7 +666,7 @@ namespace NemoApp
                 //Lecture des données et stockage dans la collection
                 while (dataReader.Read())
                 {
-                    Client leClient = new Client(Convert.ToInt16(dataReader["idCli "]), Convert.ToString(dataReader["nomCli"]), Convert.ToString(dataReader["preCli"]) , Convert.ToString(dataReader["niveauCli"]), (DateOnly)dataReader["dateInsCli"]);
+                    Client leClient = new Client(Convert.ToInt16(dataReader["idCli"]), Convert.ToString(dataReader["nomCli"]), Convert.ToString(dataReader["preCli"]) , Convert.ToString(dataReader["niveauCli"]), Convert.ToDateTime(dataReader["dateInsCli"]));
                     dbClient.Add(leClient);
                 }
 
