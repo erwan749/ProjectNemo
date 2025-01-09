@@ -503,6 +503,102 @@ namespace NemoApp
 
         #endregion
 
+        #region partipant
+
+        public static void InsertParticiant(Plonge unePlongee, Client unCient, int pressence)
+        {
+            string query = "INSERT INTO Participants  (idPlong  , idCli  ,presence ) VALUES(" + unePlongee.IdPlonge + "," + unCient.IdCli + "," + pressence + ")";
+            Console.WriteLine(query);
+            if (Connexion.OpenConnection() == true)
+            {
+                //create command and assign the query and connection from the constructor
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+
+                //Execute command
+                cmd.ExecuteNonQuery();
+
+                //close connection
+                Connexion.CloseConnection();
+            }
+        }
+
+        public static void UpdateParticiant(Participant unParticipant,Plonge unePlongee, Client unCient, int pressence)
+        {
+            //Update Magazine
+            string query = "UPDATE Participants SET idPlong  =" + unePlongee.IdPlonge + ", idCli =" + unCient.IdCli + ", presence ='" + pressence + "' WHERE idPart=" + unParticipant.IdPart;
+            Console.WriteLine(query);
+            //Open connection
+            if (Connexion.OpenConnection() == true)
+            {
+                //create mysql command
+                MySqlCommand cmd = new MySqlCommand();
+                //Assign the query using CommandText
+                cmd.CommandText = query;
+                //Assign the connection using Connection
+                cmd.Connection = connection;
+
+                //Execute query
+                cmd.ExecuteNonQuery();
+
+                //close connection
+                Connexion.CloseConnection();
+            }
+        }
+
+        public static void DeleteParticiant(Participant unParticipant)
+        {
+            //Delete Magazine
+            string query = "DELETE FROM Participants WHERE idPart =" + unParticipant.IdPart;
+
+            if (Connexion.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+                Connexion.CloseConnection();
+            }
+        }
+
+        public static List<Participant> SelectedParticipants()
+        {
+            //Select statement
+            string query = "SELECT idPart   , Participants.idPlong ,Participants.idCli,nomCli,preCli, presence  FROM Participants inner join Clients on Participants.idCli = Clients.idCli   ";
+
+            //Create a list to store the result
+            List<Participant> dbParticipant = new List<Participant>();
+
+            //Ouverture connection
+            if (Connexion.OpenConnection() == true)
+            {
+                //Creation Command MySQL
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                //Création d'un DataReader et execution de la commande
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                //Lecture des données et stockage dans la collection
+                while (dataReader.Read())
+                {
+                    Participant unParticipant = new Participant(Convert.ToInt16(dataReader["idPart "]), Convert.ToInt16(dataReader["idPlong"]), Convert.ToInt16(dataReader["idCli"]), Convert.ToString(dataReader["nomCli"]) +" " + Convert.ToString(dataReader["preCli"]), Convert.ToInt16(dataReader["presence"]));
+                    dbParticipant.Add(unParticipant);
+                }
+
+                //fermeture du Data Reader
+                dataReader.Close();
+
+                //fermeture Connection
+                Connexion.CloseConnection();
+
+                //retour de la collection pour être affichée
+                return dbParticipant;
+            }
+            else
+            {
+                return dbParticipant;
+            }
+
+        }
+
+        #endregion
+
         #region Site //List des site
 
         public static List<Site> SelectedSite()
