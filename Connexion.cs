@@ -480,7 +480,7 @@ namespace NemoApp
                 //Lecture des données et stockage dans la collection
                 while (dataReader.Read())
                 {
-                    Plonge laPlonge = new Plonge(Convert.ToInt16(dataReader["idPlong "]), Convert.ToDateTime(dataReader["datePlong"]), Convert.ToInt16(dataReader["idSite"]), Convert.ToString(dataReader["nomSite"]), Convert.ToString(dataReader["dureePlong"]));
+                    Plonge laPlonge = new Plonge(Convert.ToInt16(dataReader["idPlong"]), Convert.ToDateTime(dataReader["datePlong"]), Convert.ToInt16(dataReader["idSite"]), Convert.ToString(dataReader["nomSite"]), Convert.ToString(dataReader["dureePlong"]));
                     dbPlonge.Add(laPlonge);
                 }
 
@@ -505,7 +505,7 @@ namespace NemoApp
 
         #region partipant
 
-        public static void InsertParticiant(Plonge unePlongee, Client unCient, int pressence)
+        public static void InsertParticipants(Plonge unePlongee, Client unCient, int pressence)
         {
             string query = "INSERT INTO Participants  (idPlong  , idCli  ,presence ) VALUES(" + unePlongee.IdPlonge + "," + unCient.IdCli + "," + pressence + ")";
             Console.WriteLine(query);
@@ -522,7 +522,7 @@ namespace NemoApp
             }
         }
 
-        public static void UpdateParticiant(Participant unParticipant,Plonge unePlongee, Client unCient, int pressence)
+        public static void UpdateParticipants(Participant unParticipant,Plonge unePlongee, Client unCient, int pressence)
         {
             //Update Magazine
             string query = "UPDATE Participants SET idPlong  =" + unePlongee.IdPlonge + ", idCli =" + unCient.IdCli + ", presence ='" + pressence + "' WHERE idPart=" + unParticipant.IdPart;
@@ -545,7 +545,7 @@ namespace NemoApp
             }
         }
 
-        public static void DeleteParticiant(Participant unParticipant)
+        public static void DeleteParticipants(Participant unParticipant)
         {
             //Delete Magazine
             string query = "DELETE FROM Participants WHERE idPart =" + unParticipant.IdPart;
@@ -577,7 +577,7 @@ namespace NemoApp
                 //Lecture des données et stockage dans la collection
                 while (dataReader.Read())
                 {
-                    Participant unParticipant = new Participant(Convert.ToInt16(dataReader["idPart "]), Convert.ToInt16(dataReader["idPlong"]), Convert.ToInt16(dataReader["idCli"]), Convert.ToString(dataReader["nomCli"]) +" " + Convert.ToString(dataReader["preCli"]), Convert.ToInt16(dataReader["presence"]));
+                    Participant unParticipant = new Participant(Convert.ToInt16(dataReader["idPart"]), Convert.ToInt16(dataReader["idPlong"]), Convert.ToInt16(dataReader["idCli"]), Convert.ToString(dataReader["nomCli"]) +" " + Convert.ToString(dataReader["preCli"]), Convert.ToInt16(dataReader["presence"]));
                     dbParticipant.Add(unParticipant);
                 }
 
