@@ -12,10 +12,10 @@ namespace NemoApp
         private string _nomCli;
         private string _preCli;
         private string _niveauCli;
-        private DateOnly _dateInsCli;
+        private DateTime _dateInsCli;
 
         #region Constructeur
-        public Client(int IdCli, string NomCli, string PreCli, string NiveauCli, DateOnly DateInsCli)
+        public Client(int IdCli, string NomCli, string PreCli, string NiveauCli, DateTime DateInsCli)
         {
 
             _idCli = IdCli;
@@ -50,7 +50,7 @@ namespace NemoApp
             get { return _niveauCli; }
             set { _niveauCli = value; }
         }
-        public DateOnly DateInsCli
+        public DateTime DateInsCli
         {
             get { return _dateInsCli; }
             set { _dateInsCli = value; }
