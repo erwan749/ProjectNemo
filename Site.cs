@@ -45,5 +45,12 @@ namespace NemoApp
             set { _profondMax = value; }
         }
         #endregion
+
+        #region Méthodes
+        public override string ToString()
+        {
+            return _nomSite;
+        }
+        #endregion
     }
 }
