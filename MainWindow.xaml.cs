@@ -14,6 +14,9 @@ namespace NemoApp
         List<Personnel> lesPersonnels = new List<Personnel>();
         Dictionary<int, string> roles;
         List<Plonge> lesPlongees = new List<Plonge>();
+        List<Site> lesSites = new List<Site>();
+        List<Participant> lesParticipants = new List<Participant>();
+        List<Client> lesClients = new List<Client>();
 
         public MainWindow()
         {
@@ -31,6 +34,18 @@ namespace NemoApp
 
             lesPlongees = Connexion.SelectedPlongees();
             dataGridPlongee.ItemsSource = lesPlongees;
+
+            lesSites = Connexion.SelectedSite();
+
+
+          
+
+            // Lier la ComboBox aux rôles
+            comboSitePlong.ItemsSource = lesSites;
+            comboSitePlong.DisplayMemberPath = "NomSite";
+            comboSitePlong.SelectedValuePath = "IdSite";
+
+
         }
         
 
@@ -196,10 +211,60 @@ namespace NemoApp
 
         }
 
+
         private void ModifierPlongee_Click(object sender, RoutedEventArgs e)
         {
+            if (dataGridPlongee.SelectedItem is Plonge selectedPlongee && selectedPlongee != null)
+            {
+                try
+                {
+                    // Validation des données
+                    if (datePickerPlong.SelectedDate == null)
+                    {
+                        throw new Exception("Veuillez sélectionner une date valide.");
+                    }
 
+                    DateTime time = datePickerPlong.SelectedDate.Value;
+
+                    if (comboSitePlong.SelectedItem is not Site selectedSite)
+                    {
+                        throw new Exception("Veuillez sélectionner un site.");
+                    }
+
+                    if (!int.TryParse(txtDureePlong.Text, out int duree) || duree <= 0)
+                    {
+                        throw new Exception("Veuillez entrer une durée valide.");
+                    }
+
+                    // Mise à jour de la plongée
+                    Connexion.UpdatePlongees(
+                        selectedPlongee,
+                        time,
+                        selectedSite,
+                        duree.ToString() // Si la méthode attend une chaîne
+                    );
+
+                    // Rafraîchir les données
+                    lesPlongees = Connexion.SelectedPlongees();
+                    dataGridPlongee.ItemsSource = null;
+                    dataGridPlongee.ItemsSource = lesPlongees;
+
+                    // Afficher un message de succès
+                    MessageBox.Show("Plongée modifiée avec succès !");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Erreur lors de la modification : {ex.Message}");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Veuillez sélectionner une plongée à modifier.");
+            }
         }
+
+
+
 
         private void SupprimerPlongee_Click(object sender, RoutedEventArgs e)
         {
