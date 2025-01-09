@@ -61,5 +61,12 @@ namespace NemoApp
         }
         #endregion
 
+        #region Méthodes
+        public override string ToString()
+        {
+            return  _datePlonge + " " + _nameSite ;
+        }
+        #endregion
+
     }
 }
