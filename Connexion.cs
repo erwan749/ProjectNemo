@@ -461,7 +461,7 @@ namespace NemoApp
             }
         }
 
-        public static List<Plonge> SelectPlongees()
+        public static List<Plonge> SelectedPlongees()
         {
             //Select statement
             string query = "SELECT idPlong  , datePlong ,Site.idSite, nomSite  , dureePlong FROM Plongees inner join Site on Plongees.idSite  = Site.idSite  ";
@@ -503,9 +503,9 @@ namespace NemoApp
 
         #endregion
 
-        #region Site
+        #region Site //List des site
 
-        public static List<Site> SelectSite()
+        public static List<Site> SelectedSite()
         {
             //Select statement
             string query = "SELECT idSite  , nomSite , profondMax  FROM Site ";
@@ -543,6 +543,50 @@ namespace NemoApp
             }
 
         }
+
+        #endregion
+
+        #region Client //List des client
+
+        public static List<Client> SelectedClient()
+        {
+            //Select statement
+            string query = "SELECT idCli  , nomCli , preCli , niveauCli , dateInsCli FROM Clients ";
+
+            //Create a list to store the result
+            List<Client> dbClient = new List<Client>();
+
+            //Ouverture connection
+            if (Connexion.OpenConnection() == true)
+            {
+                //Creation Command MySQL
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                //Création d'un DataReader et execution de la commande
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                //Lecture des données et stockage dans la collection
+                while (dataReader.Read())
+                {
+                    Client leClient = new Client(Convert.ToInt16(dataReader["idCli "]), Convert.ToString(dataReader["nomCli"]), Convert.ToString(dataReader["preCli"]) , Convert.ToString(dataReader["niveauCli"]), (DateOnly)dataReader["dateInsCli"]);
+                    dbClient.Add(leClient);
+                }
+
+                //fermeture du Data Reader
+                dataReader.Close();
+
+                //fermeture Connection
+                Connexion.CloseConnection();
+
+                //retour de la collection pour être affichée
+                return dbClient;
+            }
+            else
+            {
+                return dbClient;
+            }
+
+        }
+
 
         #endregion
     }
