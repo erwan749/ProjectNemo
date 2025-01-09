@@ -464,7 +464,7 @@ namespace NemoApp
         public static List<Plonge> SelectPlongees()
         {
             //Select statement
-            string query = "SELECT idPlong  , datePlong , nomSite  , dureePlong FROM Plongees inner join Site on Plongees.idSite  = Site.idSite  ";
+            string query = "SELECT idPlong  , datePlong ,Site.idSite, nomSite  , dureePlong FROM Plongees inner join Site on Plongees.idSite  = Site.idSite  ";
 
             //Create a list to store the result
             List<Plonge> dbPlonge = new List<Plonge>();
@@ -480,7 +480,7 @@ namespace NemoApp
                 //Lecture des données et stockage dans la collection
                 while (dataReader.Read())
                 {
-                    Plonge laPlonge = new Plonge(Convert.ToInt16(dataReader["idPlong "]), Convert.ToDateTime(dataReader["datePlong"]) , Convert.ToString(dataReader["nomSite"]), Convert.ToString(dataReader["dureePlong"]));
+                    Plonge laPlonge = new Plonge(Convert.ToInt16(dataReader["idPlong "]), Convert.ToDateTime(dataReader["datePlong"]), Convert.ToInt16(dataReader["idSite"]), Convert.ToString(dataReader["nomSite"]), Convert.ToString(dataReader["dureePlong"]));
                     dbPlonge.Add(laPlonge);
                 }
 
@@ -500,6 +500,49 @@ namespace NemoApp
 
         }
 
+
+        #endregion
+
+        #region Site
+
+        public static List<Site> SelectSite()
+        {
+            //Select statement
+            string query = "SELECT idSite  , nomSite , profondMax  FROM Site ";
+
+            //Create a list to store the result
+            List<Site> dbSite = new List<Site>();
+
+            //Ouverture connection
+            if (Connexion.OpenConnection() == true)
+            {
+                //Creation Command MySQL
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                //Création d'un DataReader et execution de la commande
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                //Lecture des données et stockage dans la collection
+                while (dataReader.Read())
+                {
+                    Site leLocation = new Site(Convert.ToInt16(dataReader["idSite"]), Convert.ToString(dataReader["nomSite"]), Convert.ToInt16(dataReader["profondMax"]));
+                    dbSite.Add(leLocation);
+                }
+
+                //fermeture du Data Reader
+                dataReader.Close();
+
+                //fermeture Connection
+                Connexion.CloseConnection();
+
+                //retour de la collection pour être affichée
+                return dbSite;
+            }
+            else
+            {
+                return dbSite;
+            }
+
+        }
 
         #endregion
     }

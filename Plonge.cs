@@ -12,6 +12,7 @@ namespace NemoApp
 
         private int _idPlonge;
         private DateTime _datePlonge;
+        private int _idSite;
         private string _nameSite;
         private string _duréePlonge;
 
@@ -19,10 +20,11 @@ namespace NemoApp
 
         #region Constructeur
 
-        public Plonge(int IdPlonge, DateTime DatePlonge, string Site, string DuréePlonge)
+        public Plonge(int IdPlonge, DateTime DatePlonge,int idSite, string Site, string DuréePlonge)
         {
             _idPlonge = IdPlonge;
             _datePlonge = DatePlonge;
+            _idSite = idSite;
             _nameSite = Site;
             _duréePlonge = DuréePlonge;
         }
@@ -41,7 +43,13 @@ namespace NemoApp
             get { return _datePlonge; }
             set { _datePlonge = value; }
         }
-        public string Site
+
+        public int IdSite
+        {
+            get { return _idSite; }
+            set { _idSite = value; }
+        }
+        public string nameSite
         {
             get { return _nameSite; }
             set { _nameSite = value; }
